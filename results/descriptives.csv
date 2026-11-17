@@ -1,0 +1,31 @@
+variable,group,n,missing,mean,se,p25,median,p75
+Age (years),All,8063,0,48.734,0.553,33.000,48.000,62.000
+Age (years),No diabetes,6458,0,46.700,0.552,32.000,46.000,60.000
+Age (years),Diabetes,1605,0,60.668,0.714,52.000,61.000,72.000
+BMI (kg/m²),All,7925,138,29.808,0.173,24.800,28.600,33.500
+BMI (kg/m²),No diabetes,6369,89,29.242,0.165,24.300,28.100,32.777
+BMI (kg/m²),Diabetes,1556,49,33.185,0.306,28.100,31.800,36.900
+Waist circumference (cm),All,7669,394,100.717,0.485,88.800,99.200,111.152
+Waist circumference (cm),No diabetes,6194,264,98.994,0.495,87.000,97.400,109.100
+Waist circumference (cm),Diabetes,1475,130,111.253,0.586,100.600,110.300,120.800
+HbA1c (%),All,7999,64,5.690,0.018,5.200,5.500,5.800
+HbA1c (%),No diabetes,6458,0,5.419,0.008,5.200,5.400,5.700
+HbA1c (%),Diabetes,1541,64,7.327,0.069,6.400,6.800,7.900
+Systolic BP (mmHg),All,7269,794,122.118,0.382,110.000,119.667,131.333
+Systolic BP (mmHg),No diabetes,5840,618,120.965,0.356,109.333,119.000,129.667
+Systolic BP (mmHg),Diabetes,1429,176,128.951,0.853,116.000,126.000,140.333
+MVPA (moderate-equivalent min/week),All,7877,186,1080.846,37.653,60.000,420.000,1380.000
+MVPA (moderate-equivalent min/week),No diabetes,6303,155,1147.060,40.442,90.000,480.000,1500.000
+MVPA (moderate-equivalent min/week),Diabetes,1574,31,694.110,65.026,0.000,180.000,690.000
+Sedentary time (h/day),All,7995,68,5.914,0.081,3.000,5.000,8.000
+Sedentary time (h/day),No diabetes,6409,49,5.865,0.090,3.000,5.000,8.000
+Sedentary time (h/day),Diabetes,1586,19,6.200,0.131,4.000,6.000,8.000
+Energy intake (kcal/day),All,6836,1227,2072.310,13.331,1502.000,1986.958,2568.008
+Energy intake (kcal/day),No diabetes,5497,961,2089.965,14.872,1519.975,2001.911,2595.000
+Energy intake (kcal/day),Diabetes,1339,266,1968.758,44.506,1419.000,1891.166,2434.940
+Total sugars (g/day),All,6836,1227,100.287,1.492,54.230,88.299,131.819
+Total sugars (g/day),No diabetes,5497,961,101.640,1.538,55.690,90.159,133.246
+Total sugars (g/day),Diabetes,1339,266,92.351,2.536,49.983,78.497,121.503
+Dietary fiber (g/day),All,6836,1227,16.171,0.332,9.400,14.300,20.500
+Dietary fiber (g/day),No diabetes,5497,961,16.273,0.341,9.400,14.400,20.600
+Dietary fiber (g/day),Diabetes,1339,266,15.570,0.428,9.200,13.800,20.000

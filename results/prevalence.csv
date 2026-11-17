@@ -1,0 +1,25 @@
+outcome,variable,level,n,prev,lower,upper
+Total diabetes,Overall,All adults,8063,0.1456,0.1369,0.1549
+Undiagnosed,Overall,All adults,8063,0.0238,0.0203,0.0280
+Total diabetes,Physical activity,Active,4846,0.1162,0.1065,0.1267
+Total diabetes,Physical activity,Insufficient,989,0.1637,0.1295,0.2047
+Total diabetes,Physical activity,Inactive,2042,0.2331,0.2072,0.2612
+Total diabetes,BMI (kg/m²),<25,1987,0.0551,0.0442,0.0685
+Total diabetes,BMI (kg/m²),25-29.9,2542,0.1177,0.1040,0.1331
+Total diabetes,BMI (kg/m²),30-34.9,1735,0.1895,0.1624,0.2201
+Total diabetes,BMI (kg/m²),>=35,1661,0.2480,0.2263,0.2710
+Total diabetes,Age (years),20-39,2355,0.0325,0.0243,0.0434
+Total diabetes,Age (years),40-59,2684,0.1525,0.1296,0.1786
+Total diabetes,Age (years),60+,3024,0.2684,0.2478,0.2901
+Total diabetes,Sex,Male,3929,0.1580,0.1431,0.1742
+Total diabetes,Sex,Female,4134,0.1340,0.1190,0.1505
+Total diabetes,Income-to-poverty ratio,>=3.5,2253,0.1239,0.1060,0.1442
+Total diabetes,Income-to-poverty ratio,1.3-3.49,2751,0.1670,0.1449,0.1918
+Total diabetes,Income-to-poverty ratio,<1.3,1958,0.1666,0.1466,0.1887
+Total diabetes,Race/ethnicity,NH White,2821,0.1325,0.1196,0.1465
+Total diabetes,Race/ethnicity,NH Black,2090,0.1781,0.1569,0.2015
+Total diabetes,Race/ethnicity,Hispanic,1798,0.1550,0.1388,0.1726
+Total diabetes,Race/ethnicity,NH Asian,968,0.1688,0.1481,0.1917
+Total diabetes,Race/ethnicity,Other/Multi,386,0.1929,0.1546,0.2379
+Total diabetes incl. FPG,Overall,Fasting subsample,3757,0.1623,0.1431,0.1834
+Undiagnosed incl. FPG,Overall,Fasting subsample,3757,0.0455,0.0382,0.0541

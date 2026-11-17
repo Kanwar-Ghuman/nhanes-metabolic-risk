@@ -1,0 +1,58 @@
+model,term,OR,lower,upper,p
+Main (survey-weighted),pa_catInsufficient,1.1235,0.7942,1.5894,0.4955
+Main (survey-weighted),pa_catInactive,1.5253,1.2594,1.8474,0.0001
+Main (survey-weighted),bmi_cat25-29.9,1.7898,1.2473,2.5682,0.0028
+Main (survey-weighted),bmi_cat30-34.9,3.6833,2.6118,5.1944,0.0000
+Main (survey-weighted),bmi_cat>=35,6.4921,4.7461,8.8805,0.0000
+Main (survey-weighted),age_cat40-59,5.7685,4.0849,8.1461,0.0000
+Main (survey-weighted),age_cat60+,13.2119,9.0497,19.2883,0.0000
+Main (survey-weighted),sexFemale,0.6362,0.4947,0.8181,0.0011
+Main (survey-weighted),pir_cat1.3-3.49,1.2809,0.9414,1.7430,0.1103
+Main (survey-weighted),pir_cat<1.3,1.4783,1.0824,2.0189,0.0160
+Main (survey-weighted),raceNH Black,1.4248,1.0893,1.8635,0.0118
+Main (survey-weighted),raceHispanic,1.5164,1.0854,2.1186,0.0167
+Main (survey-weighted),raceNH Asian,2.7888,1.9833,3.9215,0.0000
+Main (survey-weighted),raceOther/Multi,1.6950,1.1988,2.3967,0.0043
+Unweighted (ignores design),pa_catInsufficient,1.2962,1.0643,1.5786,0.0099
+Unweighted (ignores design),pa_catInactive,1.5288,1.3166,1.7752,0.0000
+Unweighted (ignores design),bmi_cat25-29.9,1.6936,1.3727,2.0894,0.0000
+Unweighted (ignores design),bmi_cat30-34.9,3.0581,2.4546,3.8100,0.0000
+Unweighted (ignores design),bmi_cat>=35,5.3409,4.2779,6.6682,0.0000
+Unweighted (ignores design),age_cat40-59,5.7846,4.4603,7.5021,0.0000
+Unweighted (ignores design),age_cat60+,13.9540,10.7960,18.0358,0.0000
+Unweighted (ignores design),sexFemale,0.6670,0.5828,0.7633,0.0000
+Unweighted (ignores design),pir_cat1.3-3.49,1.2181,1.0386,1.4287,0.0153
+Unweighted (ignores design),pir_cat<1.3,1.4248,1.1941,1.7002,0.0001
+Unweighted (ignores design),raceNH Black,1.4061,1.1838,1.6702,0.0001
+Unweighted (ignores design),raceHispanic,1.6981,1.4132,2.0404,0.0000
+Unweighted (ignores design),raceNH Asian,2.5522,2.0200,3.2247,0.0000
+Unweighted (ignores design),raceOther/Multi,1.8395,1.3372,2.5304,0.0002
+Income missing as category,pa_catInsufficient,1.0739,0.7781,1.4822,0.6525
+Income missing as category,pa_catInactive,1.5399,1.3133,1.8057,0.0000
+Income missing as category,bmi_cat25-29.9,1.8450,1.3993,2.4326,0.0001
+Income missing as category,bmi_cat30-34.9,3.6433,2.7479,4.8304,0.0000
+Income missing as category,bmi_cat>=35,6.2147,4.7004,8.2169,0.0000
+Income missing as category,age_cat40-59,5.7238,4.1280,7.9365,0.0000
+Income missing as category,age_cat60+,13.4869,9.2988,19.5612,0.0000
+Income missing as category,sexFemale,0.6517,0.5151,0.8245,0.0009
+Income missing as category,pir_cat1.3-3.49,1.2729,0.9393,1.7249,0.1145
+Income missing as category,pir_cat<1.3,1.4635,1.0833,1.9770,0.0152
+Income missing as category,pir_catMissing,0.9927,0.7712,1.2777,0.9528
+Income missing as category,raceNH Black,1.4641,1.1656,1.8391,0.0020
+Income missing as category,raceHispanic,1.5232,1.1428,2.0302,0.0058
+Income missing as category,raceNH Asian,2.8006,2.0468,3.8320,0.0000
+Income missing as category,raceOther/Multi,1.8493,1.2841,2.6632,0.0019
+Diabetes incl. FPG >=126 (fasting subsample),pa_catInsufficient,0.8107,0.5217,1.2600,0.3365
+Diabetes incl. FPG >=126 (fasting subsample),pa_catInactive,1.3223,0.9321,1.8759,0.1124
+Diabetes incl. FPG >=126 (fasting subsample),bmi_cat25-29.9,1.5072,0.8468,2.6827,0.1553
+Diabetes incl. FPG >=126 (fasting subsample),bmi_cat30-34.9,2.7762,1.5823,4.8712,0.0010
+Diabetes incl. FPG >=126 (fasting subsample),bmi_cat>=35,8.7585,5.1029,15.0330,0.0000
+Diabetes incl. FPG >=126 (fasting subsample),age_cat40-59,5.5667,3.5755,8.6668,0.0000
+Diabetes incl. FPG >=126 (fasting subsample),age_cat60+,14.7386,9.3443,23.2468,0.0000
+Diabetes incl. FPG >=126 (fasting subsample),sexFemale,0.5563,0.4457,0.6944,0.0000
+Diabetes incl. FPG >=126 (fasting subsample),pir_cat1.3-3.49,1.4367,1.0206,2.0225,0.0387
+Diabetes incl. FPG >=126 (fasting subsample),pir_cat<1.3,1.6432,1.1096,2.4335,0.0153
+Diabetes incl. FPG >=126 (fasting subsample),raceNH Black,1.4103,0.9885,2.0119,0.0573
+Diabetes incl. FPG >=126 (fasting subsample),raceHispanic,1.8587,1.1682,2.9572,0.0109
+Diabetes incl. FPG >=126 (fasting subsample),raceNH Asian,2.8434,1.9479,4.1507,0.0000
+Diabetes incl. FPG >=126 (fasting subsample),raceOther/Multi,1.3963,0.6866,2.8399,0.3420
