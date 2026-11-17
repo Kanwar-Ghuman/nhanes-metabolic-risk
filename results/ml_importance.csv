@@ -1,0 +1,27 @@
+model,feature,importance,sd
+Logistic regression,RIDAGEYR,0.1328,0.0121
+Logistic regression,INDFMPIR,0.0024,0.0014
+Logistic regression,BMXBMI,0.0003,0.0003
+Logistic regression,BMXWAIST,0.1057,0.0089
+Logistic regression,sbp,0.0055,0.0023
+Logistic regression,dbp,0.0072,0.0022
+Logistic regression,mvpa_min_wk,0.0007,0.0004
+Logistic regression,sed_hr,0.0002,0.0003
+Logistic regression,DR1TKCAL,0.0007,0.0005
+Logistic regression,DR1TSUGR,0.0065,0.0023
+Logistic regression,DR1TFIBE,-0.0009,0.0008
+Logistic regression,sex,-0.0005,0.0015
+Logistic regression,race,0.0274,0.0038
+Random forest,RIDAGEYR,0.1263,0.0116
+Random forest,INDFMPIR,0.0018,0.0010
+Random forest,BMXBMI,0.0131,0.0037
+Random forest,BMXWAIST,0.0488,0.0072
+Random forest,sbp,0.0055,0.0021
+Random forest,dbp,0.0061,0.0013
+Random forest,mvpa_min_wk,0.0063,0.0020
+Random forest,sed_hr,0.0004,0.0004
+Random forest,DR1TKCAL,0.0005,0.0010
+Random forest,DR1TSUGR,0.0093,0.0025
+Random forest,DR1TFIBE,0.0003,0.0006
+Random forest,sex,0.0012,0.0008
+Random forest,race,0.0139,0.0017
