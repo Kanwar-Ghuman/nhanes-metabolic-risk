@@ -1,0 +1,51 @@
+step,variable,rule,non_missing_before,set_to_missing,non_missing_after
+1,DIQ010,"Refused / don't know (7, 9)",14986,8,14978
+1,PAQ605,"Refused / don't know (7, 9)",9693,7,9686
+1,PAQ620,"Refused / don't know (7, 9)",9693,7,9686
+1,PAQ635,"Refused / don't know (7, 9)",9693,2,9691
+1,PAQ650,"Refused / don't know (7, 9)",9693,0,9693
+1,PAQ665,"Refused / don't know (7, 9)",9693,2,9691
+1,PAQ610,"Refused / don't know (77, 99)",2418,3,2415
+1,PAQ625,"Refused / don't know (77, 99)",4187,10,4177
+1,PAQ640,"Refused / don't know (77, 99)",2253,6,2247
+1,PAQ655,"Refused / don't know (77, 99)",2422,1,2421
+1,PAQ670,"Refused / don't know (77, 99)",3904,3,3901
+1,PAD615,"Refused / don't know (7777, 9999)",2402,8,2394
+1,PAD630,"Refused / don't know (7777, 9999)",4164,17,4147
+1,PAD645,"Refused / don't know (7777, 9999)",2241,5,2236
+1,PAD660,"Refused / don't know (7777, 9999)",2417,2,2415
+1,PAD675,"Refused / don't know (7777, 9999)",3893,1,3892
+1,PAD680,"Refused / don't know (7777, 9999)",9676,66,9610
+2,BMXHT,"Outside plausible adult range [100, 230]",13157,0,13157
+2,BMXWT,"Outside plausible adult range [20, 300]",14075,0,14075
+2,BMXBMI,"Outside plausible adult range [12, 100]",13137,0,13137
+2,BMXWAIST,"Outside plausible adult range [40, 200]",12574,0,12574
+2,LBXGH,"Outside plausible adult range [3, 20]",9737,1,9736
+2,LBXGLU,"Outside plausible adult range [40, 600]",4744,0,4744
+2,INDFMPIR,"Outside plausible adult range [0, 5]",13359,0,13359
+2,BPXOSY1,"Outside plausible adult range [60, 270]",10352,0,10352
+2,BPXOSY2,"Outside plausible adult range [60, 270]",10327,0,10327
+2,BPXOSY3,"Outside plausible adult range [60, 270]",10286,0,10286
+2,BPXODI1,"Outside plausible adult range [30, 150]",10352,1,10351
+2,BPXODI2,"Outside plausible adult range [30, 150]",10327,0,10327
+2,BPXODI3,"Outside plausible adult range [30, 150]",10286,0,10286
+2,PAQ610,"Outside plausible adult range [1, 7]",2415,0,2415
+2,PAQ625,"Outside plausible adult range [1, 7]",4177,0,4177
+2,PAQ640,"Outside plausible adult range [1, 7]",2247,0,2247
+2,PAQ655,"Outside plausible adult range [1, 7]",2421,0,2421
+2,PAQ670,"Outside plausible adult range [1, 7]",3901,0,3901
+2,PAD615,"Outside plausible adult range [0, 960]",2394,0,2394
+2,PAD630,"Outside plausible adult range [0, 960]",4147,0,4147
+2,PAD645,"Outside plausible adult range [0, 960]",2236,0,2236
+2,PAD660,"Outside plausible adult range [0, 960]",2415,0,2415
+2,PAD675,"Outside plausible adult range [0, 960]",3892,0,3892
+2,PAD680,"Outside plausible adult range [0, 1440]",9610,0,9610
+3,BPXOSY1,Diastolic >= systolic in same reading,10352,0,10352
+3,BPXODI1,Diastolic >= systolic in same reading,10351,0,10351
+3,BPXOSY2,Diastolic >= systolic in same reading,10327,0,10327
+3,BPXODI2,Diastolic >= systolic in same reading,10327,0,10327
+3,BPXOSY3,Diastolic >= systolic in same reading,10286,0,10286
+3,BPXODI3,Diastolic >= systolic in same reading,10286,0,10286
+4,15 PA items (participants),Activity across domains > 960 min/day (IPAQ rule),9693,148,9545
+5,Diet totals (participants),Day-1 recall not complete/reliable (DR1DRSTZ != 1),12392,0,12392
+6,Diet totals (participants),"Implausible energy intake (Willett: M 800-4200, F 500-3500 kcal)",12392,901,11491
