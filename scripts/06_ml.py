@@ -2,9 +2,10 @@
 Step 7: can non-laboratory measures identify adults with diabetes, and does
 performance hold across demographic groups?
 
-Logistic regression vs. random forest on a 70/30 stratified split. HbA1c and
-glucose are excluded because they define the outcome. Models are trained
-unweighted; test-set AUC is reported both unweighted and survey-weighted.
+Logistic regression vs. random forest vs. a PyTorch neural network on a 70/30
+stratified split. HbA1c and glucose are excluded because they define the
+outcome. Models are trained unweighted; test-set AUC is reported both
+unweighted and survey-weighted.
 """
 import matplotlib.pyplot as plt
 import numpy as np
@@ -19,6 +20,7 @@ from sklearn.model_selection import GridSearchCV, StratifiedKFold, cross_val_pre
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
+from mlp import TorchMLPClassifier
 from nhanes import COLORS, FIGURES, RESULTS, W_MEC, load_analytic, set_style
 
 SEED = 2020
@@ -34,6 +36,7 @@ FEATURE_NAMES = {
     "mvpa_min_wk": "MVPA", "sed_hr": "Sedentary time", "DR1TKCAL": "Energy intake",
     "DR1TSUGR": "Total sugars", "DR1TFIBE": "Fiber", "sex": "Sex", "race": "Race/ethnicity",
 }
+MODEL_COLORS = {"Logistic regression": COLORS["lr"], "Random forest": COLORS["rf"], "Neural network": COLORS["nn"]}
 FAIRNESS_GROUPS = {
     "Sex": ("sex", ["Male", "Female"]),
     "Race/ethnicity": ("race", ["NH White", "NH Black", "Hispanic", "NH Asian", "Other/Multi"]),
@@ -52,22 +55,35 @@ def preprocessor(scale):
     ])
 
 
-def build_models(X, y):
+def candidates():
+    """(pipeline, tuning grid) per model; an empty grid means fit with defaults."""
     lr = Pipeline([("prep", preprocessor(scale=True)),
                    ("clf", LogisticRegression(max_iter=2000))])
     rf = Pipeline([("prep", preprocessor(scale=False)),
                    ("clf", RandomForestClassifier(n_estimators=500, random_state=SEED, n_jobs=-1))])
+    nn = Pipeline([("prep", preprocessor(scale=True)),
+                   ("clf", TorchMLPClassifier(random_state=SEED))])
+    return {
+        "Logistic regression": (lr, {}),
+        "Random forest": (rf, {"clf__min_samples_leaf": [5, 10, 20, 40], "clf__max_features": ["sqrt", 0.5]}),
+        "Neural network": (nn, {"clf__hidden": [(32,), (64, 32), (128, 64)], "clf__dropout": [0.1, 0.3],
+                                "clf__weight_decay": [1e-4, 1e-2]}),
+    }
+
+
+def build_models(X, y):
     cv = StratifiedKFold(5, shuffle=True, random_state=SEED)
-    grid = {"clf__min_samples_leaf": [5, 10, 20, 40], "clf__max_features": ["sqrt", 0.5]}
-    search = GridSearchCV(rf, grid, scoring="roc_auc", cv=cv, n_jobs=-1).fit(X, y)
-    print(f"RF tuning: best {search.best_params_}, CV AUC {search.best_score_:.3f}")
-    lr_cv = cross_val_predict(lr, X, y, cv=cv, method="predict_proba")[:, 1]
-    rf_cv = cross_val_predict(search.best_estimator_, X, y, cv=cv, method="predict_proba")[:, 1]
-    print(f"LR CV AUC {roc_auc_score(y, lr_cv):.3f}")
-    models = {"Logistic regression": lr.fit(X, y), "Random forest": search.best_estimator_}
-    # Threshold chosen on out-of-fold training predictions, never on the test set
-    thresholds = {name: np.quantile(p[y == 1], 1 - TARGET_SENSITIVITY)
-                  for name, p in [("Logistic regression", lr_cv), ("Random forest", rf_cv)]}
+    models, thresholds = {}, {}
+    for name, (pipe, grid) in candidates().items():
+        if grid:
+            search = GridSearchCV(pipe, grid, scoring="roc_auc", cv=cv, n_jobs=-1).fit(X, y)
+            pipe = search.best_estimator_
+            print(f"{name}: best {search.best_params_}")
+        oof = cross_val_predict(pipe, X, y, cv=cv, method="predict_proba")[:, 1]
+        print(f"{name}: CV AUC {roc_auc_score(y, oof):.3f}")
+        models[name] = pipe.fit(X, y)
+        # Threshold chosen on out-of-fold training predictions, never on the test set
+        thresholds[name] = np.quantile(oof[y == 1], 1 - TARGET_SENSITIVITY)
     return models, thresholds
 
 
@@ -81,14 +97,15 @@ def performance(y, w, preds, rng):
     rows = []
     idx = list(boot_idx(y, rng))
     boots = {name: np.array([roc_auc_score(y[i], p[i]) for i in idx]) for name, p in preds.items()}
+    ref = "Logistic regression"
     for name, p in preds.items():
         lo, hi = np.percentile(boots[name], [2.5, 97.5])
+        diff = boots[name] - boots[ref]
         rows.append({"model": name, "auc": roc_auc_score(y, p), "auc_lower": lo, "auc_upper": hi,
-                     "auc_weighted": roc_auc_score(y, p, sample_weight=w), "brier": brier_score_loss(y, p)})
-    diff = boots["Random forest"] - boots["Logistic regression"]
-    point = roc_auc_score(y, preds["Random forest"]) - roc_auc_score(y, preds["Logistic regression"])
-    lo, hi = np.percentile(diff, [2.5, 97.5])
-    return pd.DataFrame(rows), (point, lo, hi)
+                     "auc_weighted": roc_auc_score(y, p, sample_weight=w), "brier": brier_score_loss(y, p),
+                     "delta_auc_vs_lr": roc_auc_score(y, p) - roc_auc_score(y, preds[ref]),
+                     "delta_lower": np.percentile(diff, 2.5), "delta_upper": np.percentile(diff, 97.5)})
+    return pd.DataFrame(rows)
 
 
 def fairness(test, y, preds, thresholds, rng):
@@ -115,7 +132,7 @@ def fairness(test, y, preds, thresholds, rng):
 
 def plot_roc_calibration(y, preds, perf):
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4.4))
-    colors = {"Logistic regression": COLORS["lr"], "Random forest": COLORS["rf"]}
+    colors = MODEL_COLORS
     for name, p in preds.items():
         fpr, tpr, _ = roc_curve(y, p)
         r = perf.set_index("model").loc[name]
@@ -148,16 +165,16 @@ def plot_fairness(fair):
             y -= 1
         y -= 0.4
 
-    fig, axes = plt.subplots(1, 3, figsize=(12, 7), sharey=True)
-    offsets = {"Logistic regression": 0.15, "Random forest": -0.15}
-    colors = {"Logistic regression": COLORS["lr"], "Random forest": COLORS["rf"]}
+    fig, axes = plt.subplots(1, 3, figsize=(12, 8), sharey=True)
+    offsets = dict(zip(MODEL_COLORS, [0.25, 0, -0.25]))
+    colors = MODEL_COLORS
     f = fair.set_index(["group", "level", "model"])
     for ypos, label, lv in rows:
         for name in offsets:
             r = f.loc[(label, lv, name)]
             yy = ypos + offsets[name]
             axes[0].plot([r.auc_lower, r.auc_upper], [yy, yy], color=colors[name], lw=1.4)
-            axes[0].plot(r.auc, yy, "o", color=colors[name], ms=4, label=name)
+            axes[0].plot(r.auc, yy, "o", color=colors[name], ms=3.5, label=name)
             axes[1].plot(r.sensitivity, yy, "o", color=colors[name], ms=4)
             axes[1].plot(r.fpr, yy, "x", color=colors[name], ms=5)
             axes[2].plot(r.predicted, yy, "o", color=colors[name], ms=4)
@@ -178,7 +195,7 @@ def plot_fairness(fair):
     axes[2].set(xlabel="Diabetes prevalence", title="Calibration-in-the-large\nobserved (|) vs. mean predicted (●)")
     handles, labels = axes[0].get_legend_handles_labels()
     uniq = dict(zip(labels, handles))
-    fig.legend(uniq.values(), uniq.keys(), loc="lower center", ncol=2, bbox_to_anchor=(0.5, -0.02))
+    fig.legend(uniq.values(), uniq.keys(), loc="lower center", ncol=3, bbox_to_anchor=(0.5, -0.02))
     fig.suptitle("Model performance across demographic groups (held-out test set)", fontweight="bold")
     fig.tight_layout(rect=(0, 0.03, 1, 1))
     fig.savefig(FIGURES / "fig5_fairness.png")
@@ -187,11 +204,11 @@ def plot_fairness(fair):
 
 def plot_importance(imp):
     order = imp.groupby("feature")["importance"].mean().sort_values().index
-    fig, ax = plt.subplots(figsize=(7, 4.5))
+    fig, ax = plt.subplots(figsize=(7, 5.5))
     ypos = np.arange(len(order))
-    for name, off, color in [("Logistic regression", 0.18, COLORS["lr"]), ("Random forest", -0.18, COLORS["rf"])]:
+    for (name, color), off in zip(MODEL_COLORS.items(), [0.27, 0, -0.27]):
         s = imp[imp["model"] == name].set_index("feature").loc[order]
-        ax.barh(ypos + off, s["importance"], height=0.34, xerr=s["sd"], color=color, label=name,
+        ax.barh(ypos + off, s["importance"], height=0.26, xerr=s["sd"], color=color, label=name,
                 error_kw={"lw": 0.8, "ecolor": "#555"})
     ax.set_yticks(ypos, [FEATURE_NAMES[f] for f in order])
     ax.set_xlabel("Drop in test AUC when feature is permuted")
@@ -216,11 +233,10 @@ def main():
     models, thresholds = build_models(train[features], y_train)
     preds = {name: m.predict_proba(test[features])[:, 1] for name, m in models.items()}
 
-    perf, (d, lo, hi) = performance(y_test, test[W_MEC].to_numpy(), preds, rng)
+    perf = performance(y_test, test[W_MEC].to_numpy(), preds, rng)
     perf["threshold"] = perf["model"].map(thresholds)
     perf.to_csv(RESULTS / "ml_performance.csv", index=False, float_format="%.4f")
     print(perf.round(3).to_string(index=False))
-    print(f"AUC difference (RF - LR): {d:+.3f} (95% CI {lo:+.3f} to {hi:+.3f})")
 
     fair = fairness(test, y_test, preds, thresholds, rng)
     fair.to_csv(RESULTS / "ml_fairness.csv", index=False, float_format="%.4f")

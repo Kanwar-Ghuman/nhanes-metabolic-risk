@@ -2,7 +2,7 @@
 
 A survey-weighted analysis of how physical activity, body size, and socioeconomic factors relate to diabetes in a nationally representative sample of U.S. adults, with an independent replication of the main model in R and a machine-learning screening analysis that looks at performance across demographic groups.
 
-**Summary.** Among 8,063 adults (representing 228.8 million people), 14.6% had diabetes, and about one in six of those cases was undiagnosed. After adjustment for BMI, age, sex, income, and race/ethnicity, adults who reported no moderate-to-vigorous physical activity had 1.53 times the odds of diabetes compared with those meeting activity guidelines (95% CI 1.26–1.85). BMI showed a steep gradient (OR 6.49 for BMI ≥35 vs <25). The survey-weighted Python estimates match R's `survey` package to within 10⁻⁷. A random forest using only non-laboratory measures did not outperform logistic regression (AUC 0.797 vs 0.788). With a single risk threshold, both models missed most cases in adults under 40.
+**Summary.** Among 8,063 adults (representing 228.8 million people), 14.6% had diabetes, and about one in six of those cases was undiagnosed. After adjustment for BMI, age, sex, income, and race/ethnicity, adults who reported no moderate-to-vigorous physical activity had 1.53 times the odds of diabetes compared with those meeting activity guidelines (95% CI 1.26–1.85). BMI showed a steep gradient (OR 6.49 for BMI ≥35 vs <25). The survey-weighted Python estimates match R's `survey` package to within 10⁻⁷. Using only non-laboratory measures, neither a random forest nor a PyTorch neural network outperformed logistic regression (AUC 0.797 and 0.792 vs 0.788). With a single risk threshold, all three models missed most cases in adults under 40.
 
 ---
 
@@ -76,7 +76,8 @@ NHANES is a stratified, multistage probability sample. Every analysis uses the M
 
 The outcome is the same diabetes indicator, in the analytic sample. **HbA1c and glucose are excluded as predictors because HbA1c defines the outcome**, so the task is to identify diabetes from measures you could collect without a blood draw: age, sex, race/ethnicity, PIR, BMI, waist circumference, blood pressure, MVPA, sedentary time, and day-1 energy, sugar, and fiber intake. Missing values are median-imputed with missingness indicators, inside the cross-validation pipeline.
 
-- 70/30 split stratified on the outcome (seed 2020). The random forest's leaf size and number of features per split are tuned by 5-fold cross-validated AUC on the training set.
+- **Models**: L2-regularized logistic regression; a random forest (500 trees); and a feed-forward neural network written in PyTorch ([`scripts/mlp.py`](scripts/mlp.py)). The network uses ReLU hidden layers with dropout, the AdamW optimizer, and binary cross-entropy loss. It stops training early, based on loss on a validation split taken from inside each training fold. It is wrapped in the scikit-learn estimator interface, so it uses exactly the same preprocessing, cross-validation, and evaluation code as the other two models.
+- 70/30 split stratified on the outcome (seed 2020). Random forest hyperparameters (leaf size, features per split) and network hyperparameters (layer sizes, dropout, weight decay) are tuned by 5-fold cross-validated AUC on the training set.
 - Test-set AUC with stratified bootstrap 95% CIs (1,000 resamples), a paired bootstrap for the AUC difference, survey-weighted AUC, Brier score, and decile calibration.
 - **Fairness**: for each sex, race/ethnicity, income, and age group: AUC, sensitivity, and false-positive rate at a threshold chosen on out-of-fold *training* predictions to give 80% overall sensitivity, plus observed vs. mean predicted prevalence.
 
@@ -183,8 +184,9 @@ Keeping participants with missing income changes almost nothing. The unweighted 
 |---|---:|---:|---:|
 | Logistic regression | 0.788 (0.767–0.808) | 0.818 | 0.133 |
 | Random forest (tuned) | 0.797 (0.777–0.819) | 0.829 | 0.132 |
+| Neural network, PyTorch (tuned) | 0.792 (0.771–0.811) | 0.820 | 0.132 |
 
-The random forest's advantage was small and not statistically clear (ΔAUC +0.009, 95% CI −0.001 to +0.019). With about a dozen mostly continuous predictors and largely monotonic relationships, a linear model captures nearly all of the signal. Both models were reasonably calibrated. Age and waist circumference dominated permutation importance.
+Neither flexible model was clearly better than logistic regression (paired bootstrap ΔAUC vs. logistic: random forest +0.009, 95% CI −0.001 to +0.019; neural network +0.003, −0.003 to +0.010). Cross-validation also picked the *smallest* network tried (one hidden layer of 32 units), another sign that there is little non-linear structure left to find. With about a dozen mostly continuous predictors and largely monotonic relationships, a linear model captures nearly all of the signal, which is a common result for tabular clinical data. All three models were reasonably calibrated. Age and waist circumference dominated permutation importance.
 
 ![ROC and calibration](figures/fig4_roc_calibration.png)
 
@@ -192,9 +194,9 @@ The random forest's advantage was small and not statistically clear (ΔAUC +0.00
 
 Fairness findings, held-out test set:
 
-- **Age is where a single threshold fails.** At a cutoff giving 80% sensitivity overall, the models detected only 32% (logistic) and 23% (random forest) of cases in adults aged 20–39. In adults ≥60 they detected 94–97%, but at the cost of flagging about three-quarters of those without diabetes. Within-age AUCs (0.70–0.77) are much lower than the overall AUC, so a large share of the overall discrimination comes from age itself. The 20–39 estimates are imprecise (22 cases in the test set).
-- **Calibration by age** is also off: predicted risk is roughly double the observed prevalence in 20–39 year olds and too low in 40–59 year olds.
-- **Race/ethnicity.** Discrimination was lowest for non-Hispanic Black adults (AUC 0.76) and highest for Hispanic and multiracial adults (0.82–0.87). The random forest's sensitivity for non-Hispanic Asian adults was notably lower than logistic regression's (72% vs 85%). This is consistent with the regression result: Asian adults with diabetes tend to have lower BMI and waist circumference, which a tree model leaning on body-size thresholds is more likely to miss.
+- **Age is where a single threshold fails.** At a cutoff giving 80% sensitivity overall, the models detected only 32% (logistic) and 23% (random forest and neural network) of cases in adults aged 20–39. In adults ≥60 they detected 94–97%, but at the cost of flagging about three-quarters of those without diabetes. Within-age AUCs (0.70–0.77) are much lower than the overall AUC, so a large share of the overall discrimination comes from age itself. The 20–39 estimates are imprecise (22 cases in the test set).
+- **Calibration by age** is also off: mean predicted risk in 20–39 year olds was 4.6–7.1% against an observed 3.1%, and it was too low in 40–59 year olds (16–19% vs 21%).
+- **Race/ethnicity.** Discrimination was lowest for non-Hispanic Black adults (AUC 0.76) and highest for Hispanic and multiracial adults (0.82–0.87). Both flexible models had notably lower sensitivity for non-Hispanic Asian adults than logistic regression (72% for the random forest and the neural network vs 85%). This is consistent with the regression result: Asian adults with diabetes tend to have lower BMI and waist circumference, so models that learn sharper body-size cut-offs from the majority of the data are more likely to miss them. Extra flexibility improved nothing overall and cost one group sensitivity.
 - **Sex and income.** Differences were small, with overlapping CIs.
 
 ![Permutation importance](figures/fig6_importance.png)
@@ -236,7 +238,7 @@ python scripts/02_clean_qc.py     # QC report + analytic dataset
 python scripts/03_table1.py       # Table 1
 python scripts/04_analysis.py     # descriptives, prevalence, regression, sensitivity
 python scripts/05_figures.py      # figures 1–3
-python scripts/06_ml.py           # ML comparison, fairness, figures 4–6
+python scripts/06_ml.py           # LR / random forest / PyTorch comparison, fairness, figures 4–6
 Rscript R/svyglm_check.R          # R replication and comparison
 ```
 
@@ -247,6 +249,7 @@ Rscript R/svyglm_check.R          # R replication and comparison
 ├── scripts/
 │   ├── nhanes.py            # paths, variable lists, category levels, plot style
 │   ├── svy.py               # design-based estimators (Taylor linearization)
+│   ├── mlp.py               # PyTorch neural network with a scikit-learn interface
 │   └── 01–06_*.py           # pipeline steps
 ├── R/
 │   └── svyglm_check.R

@@ -62,7 +62,7 @@ PA_LABELS = {
 
 MODEL_VARS = ["pa_cat", "bmi_cat", "age_cat", "sex", "pir_cat", "race"]
 
-COLORS = {"no": "#4C72B0", "yes": "#C44E52", "lr": "#4C72B0", "rf": "#DD8452", "grey": "#8C8C8C"}
+COLORS = {"no": "#4C72B0", "yes": "#C44E52", "lr": "#4C72B0", "rf": "#DD8452", "nn": "#55A868", "grey": "#8C8C8C"}
 
 
 def load_analytic():

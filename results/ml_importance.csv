@@ -25,3 +25,16 @@ Random forest,DR1TSUGR,0.0093,0.0025
 Random forest,DR1TFIBE,0.0003,0.0006
 Random forest,sex,0.0012,0.0008
 Random forest,race,0.0139,0.0017
+Neural network,RIDAGEYR,0.1253,0.0109
+Neural network,INDFMPIR,0.0012,0.0013
+Neural network,BMXBMI,0.0074,0.0022
+Neural network,BMXWAIST,0.0823,0.0077
+Neural network,sbp,0.0175,0.0043
+Neural network,dbp,0.0164,0.0027
+Neural network,mvpa_min_wk,0.0018,0.0010
+Neural network,sed_hr,-0.0024,0.0014
+Neural network,DR1TKCAL,0.0017,0.0009
+Neural network,DR1TSUGR,0.0109,0.0028
+Neural network,DR1TFIBE,-0.0003,0.0014
+Neural network,sex,-0.0009,0.0011
+Neural network,race,0.0218,0.0032
